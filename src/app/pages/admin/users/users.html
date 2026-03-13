@@ -1,0 +1,57 @@
+<div class="main-container">
+  <div class="registration-card">
+
+    <div class="input-field">
+      <label>Email</label>
+      <input type="email" [(ngModel)]="newUser.email" placeholder="asd@gmail.com" />
+    </div>
+
+    <div class="input-field">
+      <label>Username</label>
+      <input type="text" [(ngModel)]="newUser.name" placeholder="asd" />
+    </div>
+
+    <div class="input-field">
+      <label>Password</label>
+      <input type="password" [(ngModel)]="newUser.password" placeholder="........" />
+    </div>
+
+    <div class="input-field">
+      <label>Role</label>
+      <select [(ngModel)]="newUser.role">
+        <option value="Student">Student</option>
+        <option value="Admin">Admin</option>
+      </select>
+    </div>
+
+    <button class="register-btn" (click)="registerUser()">Register</button>
+
+    <div class="footer-links">
+      Already have an account? <a href="#">Login</a>
+    </div>
+
+    <table class="user-table">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of userList">
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role }}</td>
+          <td>{{ user.status === 1 ? 'Active' : 'Inactive' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="registrationSuccess" class="success-text">
+      Registration successful!
+    </div>
+
+  </div>
+</div>
