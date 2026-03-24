@@ -1,35 +1,79 @@
 <div class="main-container">
   <div class="registration-card">
+    <h2>REGISTER</h2>
 
-    <div class="input-field">
-      <label>Email</label>
-      <input type="email" [(ngModel)]="newUser.email" placeholder="asd@gmail.com" />
-    </div>
+    <form [formGroup]="userForm" (ngSubmit)="registerUser()" novalidate>
 
-    <div class="input-field">
-      <label>Username</label>
-      <input type="text" [(ngModel)]="newUser.name" placeholder="asd" />
-    </div>
+      <!-- Email -->
+      <div class="input-field">
+        <label>Email</label>
+        <input type="email" formControlName="email" placeholder="asd@gmail.com" />
+        <div class="error" *ngIf="email.invalid && (email.touched)">
+          <span *ngIf="email.errors?.['required']">Email is required</span>
+          <span *ngIf="email.errors?.['email']">Invalid email format</span>
+        </div>
+      </div>
 
-    <div class="input-field">
-      <label>Password</label>
-      <input type="password" [(ngModel)]="newUser.password" placeholder="........" />
-    </div>
+      <!-- Username -->
+      <div class="input-field">
+        <label>Username</label>
+        <input type="text" formControlName="name" placeholder="asd" />
+        <div class="error" *ngIf="name.invalid && (name.touched)">
+          <span *ngIf="name.errors?.['required']">Username is required</span>
+          <span *ngIf="name.errors?.['minlength']">
+            Username must be at least {{name.errors?.['minlength'].requiredLength}} characters
+          </span>
+        </div>
+      </div>
 
-    <div class="input-field">
-      <label>Role</label>
-      <select [(ngModel)]="newUser.role">
-        <option value="Student">Student</option>
-        <option value="Admin">Admin</option>
-      </select>
-    </div>
+      <!-- Password -->
+      <div class="input-field">
+        <label>Password</label>
+        <input type="password" formControlName="password" placeholder="........" />
+        <div class="error" *ngIf="password.invalid && (password.touched)">
+          <span *ngIf="password.errors?.['required']">Password is required</span>
+          <span *ngIf="password.errors?.['minlength']">
+            Password must be at least {{password.errors?.['minlength'].requiredLength}} characters
+          </span>
+        </div>
+      </div>
 
-    <button class="register-btn" (click)="registerUser()">Register</button>
+      <!-- Role -->
+      <div class="input-field">
+        <label>Role</label>
+        <select formControlName="role">
+          <option value="Student">Student</option>
+          <option value="Admin">Admin</option>
+        </select>
+      </div>
 
-    <div class="footer-links">
-      Already have an account? <a href="#">Login</a>
-    </div>
+      <!-- Address -->
+      <div class="input-field">
+        <label>Address</label>
+        <input type="text" formControlName="address" placeholder="Enter address" />
+        <div class="error" *ngIf="address.invalid && (address.touched)">
+          <span *ngIf="address.errors?.['required']">Address is required</span>
+          <span *ngIf="address.errors?.['minlength']">
+            Address must be at least {{address.errors?.['minlength'].requiredLength}} characters
+          </span>
+        </div>
+      </div>
 
+      <button type="submit" class="register-btn">Register</button>
+
+      <!-- Error -->
+      <div *ngIf="registrationError" class="error">
+        Please fix the errors above.
+      </div>
+
+      <!-- Success -->
+      <div *ngIf="success" class="success-msg">
+        User successfully registered!
+      </div>
+
+    </form>
+
+    <!-- TABLE -->
     <table class="user-table">
       <thead>
         <tr>
@@ -49,8 +93,8 @@
       </tbody>
     </table>
 
-    <div *ngIf="registrationSuccess" class="success-text">
-      Registration successful!
+    <div class="footer-links">
+      Already have an account? <a href="#">Login</a>
     </div>
 
   </div>

@@ -1,60 +1,74 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User } from '../../../models/UsersModel';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './users.html',
-  styleUrls: ['./users.css'] // fixed typo
+  styleUrls: ['./users.css']
 })
 export class Users implements OnInit {
-  public userList: User[] = [];
 
-  public newUser: Partial<User> = {
-    name: '',
-    email: '',
-    password: '',
-    role: 'Student',
-    status: 1
-  };
+  userList: User[] = [];
+  success = false;
+  registrationError = false;
+  userForm!: FormGroup;
 
-  public registrationSuccess: boolean = false;
+  constructor(private fb: FormBuilder) {
+    this.userForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      role: ['Student', Validators.required],
+      address: ['', [Validators.required, Validators.minLength(5)]]
+    });
+  }
 
-  constructor() {}
-
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadTableValues();
   }
 
+  // getters
+  get name() { return this.userForm.get('name')!; }
+  get email() { return this.userForm.get('email')!; }
+  get password() { return this.userForm.get('password')!; }
+  get role() { return this.userForm.get('role')!; }
+  get address() { return this.userForm.get('address')!; }
+
   loadTableValues() {
-    // Mock data
     this.userList = [
-      { id: 1, name: 'Test 1', email: 'test1@gmail.com', status: 1, address: 'Dulag' },
-      { id: 2, name: 'Test 2', email: 'test2@gmail.com', status: 1, address: 'Dulag' }
+      { id: 1, name: 'Test 1', email: 'test1@gmail.com', password: '123456', role: 'Student', status: 1, address: 'Dulag' },
+      { id: 2, name: 'Test 2', email: 'test2@gmail.com', password: '123456', role: 'Student', status: 1, address: 'Dulag' }
     ];
   }
 
   registerUser() {
-    if (this.newUser.email && this.newUser.name) {
-      const nextId = this.userList.length ? Math.max(...this.userList.map(u => u.id)) + 1 : 1;
+    this.success = false;
+    this.registrationError = false;
 
-      this.userList.push({
-        id: nextId,
-        name: this.newUser.name!,
-        email: this.newUser.email!,
-        password: this.newUser.password,
-        role: this.newUser.role as 'Student' | 'Admin',
-        status: 1,
-        address: this.newUser.address || ''
-      });
-
-      this.registrationSuccess = true;
-
-      // Clear form
-      this.newUser = { name: '', email: '', password: '', role: 'Student', status: 1 };
+    if (this.userForm.invalid) {
+      this.userForm.markAllAsTouched();
+      this.registrationError = true;
+      return;
     }
+
+    const user = this.userForm.value;
+
+    this.userList.push({
+      id: this.userList.length + 1,
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      role: user.role,
+      status: 1,
+      address: user.address
+    });
+
+    this.success = true;
+    this.userForm.reset({ role: 'Student' });
   }
+
 }
